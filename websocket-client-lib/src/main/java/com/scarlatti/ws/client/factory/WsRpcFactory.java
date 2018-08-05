@@ -86,4 +86,12 @@ public class WsRpcFactory implements Closeable {
             syncManager.close();
         }
     }
+
+    public WsRpcMessageFactory getMessageFactory() {
+        return messageFactory;
+    }
+
+    public WsRpcMessageConverter getMessageConverter() {
+        return messageConverter;
+    }
 }

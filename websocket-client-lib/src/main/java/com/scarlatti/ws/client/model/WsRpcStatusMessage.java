@@ -14,6 +14,10 @@ public class WsRpcStatusMessage {
     public WsRpcStatusMessage() {
     }
 
+    public WsRpcStatusMessage(String status) {
+        this.status = status;
+    }
+
     public WsRpcStatusMessage(String status, byte[] messageBytes) {
         this.status = status;
         this.contentBytes = messageBytes;

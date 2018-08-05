@@ -1,6 +1,7 @@
 package com.scarlatti.ws.client.factory;
 
 import com.scarlatti.ws.client.model.WsRpcControlMessage;
+import com.scarlatti.ws.client.model.WsRpcStatusMessage;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -13,4 +14,8 @@ public interface WsRpcMessageFactory {
 
     WsRpcControlMessage invokeMessage();
     WsRpcControlMessage killMessage();
+    WsRpcStatusMessage runningMessage();
+    WsRpcStatusMessage failedMessage();
+    WsRpcStatusMessage killedMessage();
+    WsRpcStatusMessage completeMessage();
 }

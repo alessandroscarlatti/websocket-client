@@ -2,6 +2,8 @@ package com.scarlatti.ws.client;
 
 import com.scarlatti.ws.client.model.DefaultWsRpcDetails;
 import com.scarlatti.ws.client.model.WsRpcDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,9 +18,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Config {
 
+    private static final Logger log = LoggerFactory.getLogger(Config.class);
+
     @Bean
     @ConfigurationProperties("websocket")
     public WsRpcDetails wsRpcDetails() {
-        return new DefaultWsRpcDetails();
+        DefaultWsRpcDetails details = new DefaultWsRpcDetails();
+        details.setLogger((log::info));
+        return details;
     }
 }

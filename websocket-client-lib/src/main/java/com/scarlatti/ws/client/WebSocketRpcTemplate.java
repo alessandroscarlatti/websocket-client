@@ -3,10 +3,13 @@ package com.scarlatti.ws.client;
 import com.scarlatti.ws.client.factory.WsRpcFactory;
 import com.scarlatti.ws.client.model.DefaultWsRpcDetails;
 import com.scarlatti.ws.client.model.WsRpcDetails;
+import com.scarlatti.ws.client.model.WsRpcStatusMessage;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.*;
+import java.util.function.BiConsumer;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -29,6 +32,7 @@ public class WebSocketRpcTemplate implements Closeable {
     private WsRpcFactory factory;
     private WsRpcDetails details;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     public WebSocketRpcTemplate() {
         details = new DefaultWsRpcDetails();
@@ -58,12 +62,42 @@ public class WebSocketRpcTemplate implements Closeable {
 
     public byte[] invokeForBytes() throws InterruptedException, ExecutionException {
         WsRpcCallable callable = new WsRpcCallable(factory, details);
-        Future<byte[]> rpc = new WsRpcFutureTask(callable, details);
+        FutureTask<byte[]> rpc = new WsRpcFutureTask(callable, details);
+        executorService.execute(rpc);
         return rpc.get();
+    }
+
+    public void sendRunning() {
+        WsRpcStatusMessage message = factory.getMessageFactory().runningMessage();
+        sendStatusMessage(message);
+    }
+
+    public void sendFailed() {
+        WsRpcStatusMessage message = factory.getMessageFactory().runningMessage();
+        sendStatusMessage(message);
+    }
+
+    public void sendKilled() {
+        WsRpcStatusMessage message = factory.getMessageFactory().killedMessage();
+        sendStatusMessage(message);
+    }
+
+    public void sendComplete() {
+        WsRpcStatusMessage message = factory.getMessageFactory().completeMessage();
+        sendStatusMessage(message);
+    }
+
+    private void sendStatusMessage(WsRpcStatusMessage message) {
+        String string = factory.getMessageConverter().convertStatusMessageToString(message);
+        simpMessagingTemplate.convertAndSend(details.getStatus(), string);
     }
 
     @Override
     public void close() throws IOException {
         executorService.shutdown();
+    }
+
+    public void setSimpMessagingTemplate(SimpMessagingTemplate simpMessagingTemplate) {
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 }

@@ -2,6 +2,7 @@ package com.scarlatti.ws.client.factory;
 
 import com.scarlatti.ws.client.model.WsRpcDetails;
 import com.scarlatti.ws.client.model.WsRpcControlMessage;
+import com.scarlatti.ws.client.model.WsRpcStatusMessage;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -26,5 +27,25 @@ public class DefaultWsRpcMessageFactory implements WsRpcMessageFactory {
     @Override
     public WsRpcControlMessage killMessage() {
         return new WsRpcControlMessage(details.getKill());
+    }
+
+    @Override
+    public WsRpcStatusMessage runningMessage() {
+        return new WsRpcStatusMessage(details.getRunning());
+    }
+
+    @Override
+    public WsRpcStatusMessage failedMessage() {
+        return new WsRpcStatusMessage(details.getFailed());
+    }
+
+    @Override
+    public WsRpcStatusMessage killedMessage() {
+        return new WsRpcStatusMessage(details.getKilled());
+    }
+
+    @Override
+    public WsRpcStatusMessage completeMessage() {
+        return new WsRpcStatusMessage(details.getComplete());
     }
 }
