@@ -36,7 +36,7 @@ public class DefaultWsRpcDetails implements WsRpcDetails {
     public static final String FAILED = "FAILED";
     public static final String KILLED = "KILLED";
     public static final long INVOKE_TIMEOUT_MS = 5000;
-    public static final long PROC_TIMEOUT_MS = -1;  // no timeout
+    public static final long PROC_TIMEOUT_MS = 60000;
     public static final long KILL_TIMEOUT_MS = 5000;
 
     private static Consumer<String> noOpLogger() {

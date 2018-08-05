@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.concurrent.ExecutionException;
-
 /**
  * ______    __                         __           ____             __     __  __  _
  * ___/ _ | / /__ ___ ___ ___ ____  ___/ /______    / __/______ _____/ /__ _/ /_/ /_(_)
@@ -27,13 +25,33 @@ public class AppController {
     }
 
     @GetMapping("/invoke")
-    public ResponseEntity<String> send() throws Exception {
+    public ResponseEntity<String> invoke() throws Exception {
 
         WebSocketRpcTemplate rpcTemplate = new WebSocketRpcTemplate(details);
 
         rpcTemplate.invoke();
 
         return ResponseEntity.ok("sent.");
+    }
+
+    @GetMapping("/invokeForString")
+    public ResponseEntity<String> invokeForString() throws Exception {
+
+        WebSocketRpcTemplate rpcTemplate = new WebSocketRpcTemplate(details);
+
+        String string = rpcTemplate.invokeForString();
+
+        return ResponseEntity.ok(string);
+    }
+
+    @GetMapping("/invokeForBytes")
+    public ResponseEntity<String> invokeForBytes() throws Exception {
+
+        WebSocketRpcTemplate rpcTemplate = new WebSocketRpcTemplate(details);
+
+        byte[] bytes = rpcTemplate.invokeForBytes();
+
+        return ResponseEntity.ok(new String(bytes));
     }
 
     @ExceptionHandler(Exception.class)

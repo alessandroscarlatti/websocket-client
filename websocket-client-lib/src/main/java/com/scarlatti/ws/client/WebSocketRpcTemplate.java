@@ -57,7 +57,11 @@ public class WebSocketRpcTemplate implements Closeable {
     }
 
     public String invokeForString() throws InterruptedException, ExecutionException {
-        return new String(invokeForBytes());
+        byte[] bytes = invokeForBytes();
+        if (bytes == null)
+            return null;
+
+        return new String(bytes);
     }
 
     public byte[] invokeForBytes() throws InterruptedException, ExecutionException {
@@ -68,22 +72,54 @@ public class WebSocketRpcTemplate implements Closeable {
     }
 
     public void sendRunning() {
-        WsRpcStatusMessage message = factory.getMessageFactory().runningMessage();
+        sendRunning(details.getRunning());
+    }
+
+    public void sendRunning(String text) {
+        sendRunning(text.getBytes());
+    }
+
+    public void sendRunning(byte[] bytes) {
+        WsRpcStatusMessage message = factory.getMessageFactory().runningMessage(bytes);
         sendStatusMessage(message);
     }
 
     public void sendFailed() {
-        WsRpcStatusMessage message = factory.getMessageFactory().runningMessage();
+        sendFailed(details.getFailed());
+    }
+
+    public void sendFailed(String text) {
+        sendFailed(text.getBytes());
+    }
+
+    public void sendFailed(byte[] bytes) {
+        WsRpcStatusMessage message = factory.getMessageFactory().runningMessage(bytes);
         sendStatusMessage(message);
     }
 
     public void sendKilled() {
-        WsRpcStatusMessage message = factory.getMessageFactory().killedMessage();
+        sendKilled(details.getKilled());
+    }
+
+    public void sendKilled(String text) {
+        sendKilled(text.getBytes());
+    }
+
+    public void sendKilled(byte[] bytes) {
+        WsRpcStatusMessage message = factory.getMessageFactory().killedMessage(bytes);
         sendStatusMessage(message);
     }
 
     public void sendComplete() {
-        WsRpcStatusMessage message = factory.getMessageFactory().completeMessage();
+        sendComplete(details.getComplete());
+    }
+
+    public void sendComplete(String text) {
+        sendComplete(text.getBytes());
+    }
+    
+    public void sendComplete(byte[] bytes) {
+        WsRpcStatusMessage message = factory.getMessageFactory().completeMessage(bytes);
         sendStatusMessage(message);
     }
 

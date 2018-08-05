@@ -5,3 +5,4 @@ websocket:
   address: ws://localhost:8080/rpc/connect
   control: /rpc/time
   status: /topic/rpc/time/status
+  procTimeoutMs: 10000

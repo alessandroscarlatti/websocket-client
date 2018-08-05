@@ -103,6 +103,11 @@ public class WsRpcSessionHandler implements StompSessionHandler {
     public void handleFrame(StompHeaders headers, Object payload) {
         log.info("WsRpcSessionHandler.handleFrame() headers = [{}], payload = [{}]", headers, payload);
 
+        if (!session.isConnected()) {
+            log.warn("Ignoring message since session has been disconnected: {}", payload);
+            return;
+        }
+
         // we shouldn't be receiving messages we don't expect
         if (!headers.getDestination().equals(details.getStatus())) {
             log.warn("Unknown frame received: headers = [{}], payload = [{}]", headers, payload);
@@ -122,16 +127,20 @@ public class WsRpcSessionHandler implements StompSessionHandler {
             // the remote procedure has aborted execution
             if (status.equals(details.getKilled())) {
                 log.info("Remote procedure has been killed.");
+                session.disconnect();
                 syncManager.notifyKilled();
             }
 
             if (status.equals(details.getComplete())) {
                 log.info("Remote procedure has completed.");
+                result = msg.getContentBytes();
+                session.disconnect();
                 syncManager.notifyComplete();
             }
 
             if (status.equals(details.getFailed())) {
                 log.info("Remote procedure has encountered an error");
+                session.disconnect();
                 // todo throw exception in callable...
             }
         } catch (Exception e) {

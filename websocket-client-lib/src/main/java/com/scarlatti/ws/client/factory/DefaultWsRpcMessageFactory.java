@@ -30,22 +30,22 @@ public class DefaultWsRpcMessageFactory implements WsRpcMessageFactory {
     }
 
     @Override
-    public WsRpcStatusMessage runningMessage() {
-        return new WsRpcStatusMessage(details.getRunning());
+    public WsRpcStatusMessage runningMessage(byte[] bytes) {
+        return new WsRpcStatusMessage(details.getRunning(), bytes);
     }
 
     @Override
-    public WsRpcStatusMessage failedMessage() {
-        return new WsRpcStatusMessage(details.getFailed());
+    public WsRpcStatusMessage failedMessage(byte[] bytes) {
+        return new WsRpcStatusMessage(details.getFailed(), bytes);
     }
 
     @Override
-    public WsRpcStatusMessage killedMessage() {
-        return new WsRpcStatusMessage(details.getKilled());
+    public WsRpcStatusMessage killedMessage(byte[] bytes) {
+        return new WsRpcStatusMessage(details.getKilled(), bytes);
     }
 
     @Override
-    public WsRpcStatusMessage completeMessage() {
-        return new WsRpcStatusMessage(details.getComplete());
+    public WsRpcStatusMessage completeMessage(byte[] bytes) {
+        return new WsRpcStatusMessage(details.getComplete(), bytes);
     }
 }

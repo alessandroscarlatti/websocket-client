@@ -14,8 +14,8 @@ public interface WsRpcMessageFactory {
 
     WsRpcControlMessage invokeMessage();
     WsRpcControlMessage killMessage();
-    WsRpcStatusMessage runningMessage();
-    WsRpcStatusMessage failedMessage();
-    WsRpcStatusMessage killedMessage();
-    WsRpcStatusMessage completeMessage();
+    WsRpcStatusMessage runningMessage(byte[] bytes);
+    WsRpcStatusMessage failedMessage(byte[] bytes);
+    WsRpcStatusMessage killedMessage(byte[] bytes);
+    WsRpcStatusMessage completeMessage(byte[] bytes);
 }
