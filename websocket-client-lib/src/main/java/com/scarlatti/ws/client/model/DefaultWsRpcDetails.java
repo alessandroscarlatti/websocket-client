@@ -10,42 +10,40 @@ import java.util.function.Consumer;
  * __/ __ |/ / -_|_-<(_-</ _ `/ _ \/ _  / __/ _ \  _\ \/ __/ _ `/ __/ / _ `/ __/ __/ /
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Saturday, 8/4/2018
- *
+ * <p>
  * Class to configure connection details,
  * as well as rpc event notifications.
  */
 public class DefaultWsRpcDetails implements WsRpcDetails {
-    // todo configure defaults
     private String address;
-    private String control;
-    private String status;
-    private String invoke;
-    private String kill;
-    private String log;
-    private String running;
-    private String complete;
-    private String error;
-    private String killed;
-    private long invokeTimeoutMs;
-    private long procTimeoutMs;
-    private long killTimeoutMs;
-
+    private String control = CONTROL;
+    private String status = STATUS;
+    private String invoke = INVOKE;
+    private String kill = KILL;
+    private String running = RUNNING;
+    private String complete = COMPLETE;
+    private String failed = FAILED;
+    private String killed = KILLED;
+    private long invokeTimeoutMs = INVOKE_TIMEOUT_MS;
+    private long procTimeoutMs = PROC_TIMEOUT_MS;
+    private long killTimeoutMs = KILL_TIMEOUT_MS;
     private Consumer<String> logger = noOpLogger();
 
-    public static final String WS_CONNECT_PATH = "/connect";
-    public static final String CONTROL = "/control"; // todo figure out what this actually is
-    public static final String INVOKE = "/invoke";
-    public static final String KILL = "/kill";
+    public static final String CONTROL = "/control";
+    public static final String STATUS = "/status";
+    public static final String INVOKE = "INVOKE";
+    public static final String KILL = "KILL";
     public static final String RUNNING = "RUNNING";
     public static final String COMPLETE = "COMPLETE";
-    public static final String KILL_MESSAGE = "KILL";
+    public static final String FAILED = "FAILED";
     public static final String KILLED = "KILLED";
-//    public static final String INVOKE_=
-
-
+    public static final long INVOKE_TIMEOUT_MS = 5000;
+    public static final long PROC_TIMEOUT_MS = -1;  // no timeout
+    public static final long KILL_TIMEOUT_MS = 5000;
 
     private static Consumer<String> noOpLogger() {
-        return (s) -> {};
+        return (s) -> {
+        };
     }
 
     @Override
@@ -85,15 +83,6 @@ public class DefaultWsRpcDetails implements WsRpcDetails {
     }
 
     @Override
-    public String getLog() {
-        return log;
-    }
-
-    public void setLog(String log) {
-        this.log = log;
-    }
-
-    @Override
     public String getRunning() {
         return running;
     }
@@ -112,12 +101,12 @@ public class DefaultWsRpcDetails implements WsRpcDetails {
     }
 
     @Override
-    public String getError() {
-        return error;
+    public String getFailed() {
+        return failed;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    public void setFailed(String failed) {
+        this.failed = failed;
     }
 
     @Override

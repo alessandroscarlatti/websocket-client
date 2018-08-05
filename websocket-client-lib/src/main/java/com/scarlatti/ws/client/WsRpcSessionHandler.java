@@ -1,6 +1,8 @@
 package com.scarlatti.ws.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.scarlatti.ws.client.converter.WsRpcJacksonMessageConverter;
+import com.scarlatti.ws.client.converter.WsRpcMessageConverter;
+import com.scarlatti.ws.client.factory.WsRpcMessageFactory;
 import com.scarlatti.ws.client.model.WsRpcStatusMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,16 +27,22 @@ public class WsRpcSessionHandler implements StompSessionHandler {
 
     private StompSession session;
     private WsRpcDetails details;
-    private ObjectMapper objectMapper;
+    private WsRpcMessageConverter messageMapper;
     private ExecutorService executor;
     private WsRpcSyncManager syncManager;
+    private WsRpcMessageFactory messageFactory;
     private byte[] result;
 
-    public WsRpcSessionHandler(WsRpcDetails details, ObjectMapper objectMapper, ExecutorService executor, WsRpcSyncManager syncManager) {
+    public WsRpcSessionHandler(WsRpcDetails details,
+                               WsRpcMessageConverter messageConverter,
+                               WsRpcMessageFactory messageFactory,
+                               ExecutorService executor,
+                               WsRpcSyncManager syncManager) {
         this.details = details;
-        this.objectMapper = objectMapper;
+        this.messageMapper = messageConverter;
         this.executor = executor;
         this.syncManager = syncManager;
+        this.messageFactory = messageFactory;
     }
 
     /**
@@ -42,8 +50,7 @@ public class WsRpcSessionHandler implements StompSessionHandler {
      * This is an asynchronous operation.
      */
     void invoke() {
-        // todo send kill message
-        session.send(details.getInvoke(), details.getInvokeMessage());
+        session.send(details.getControl(), messageFactory.invokeMessage());
     }
 
     /**
@@ -51,8 +58,7 @@ public class WsRpcSessionHandler implements StompSessionHandler {
      * This is an asynchronous operation.
      */
     void kill() {
-        // todo send kill message
-        session.send(details.getKill(), details.getKillMessage());
+        session.send(details.getControl(), messageFactory.killMessage());
     }
 
     /**
@@ -97,7 +103,7 @@ public class WsRpcSessionHandler implements StompSessionHandler {
         }
 
         try {
-            WsRpcStatusMessage msg = objectMapper.readValue((String) payload, WsRpcStatusMessage.class);
+            WsRpcStatusMessage msg = (WsRpcStatusMessage) messageMapper.convertFromString((String) payload);
             String status = msg.getStatus();
 
             // the remote procedure is executing
@@ -118,7 +124,7 @@ public class WsRpcSessionHandler implements StompSessionHandler {
                 syncManager.notifyComplete();
             }
 
-            if (status.equals(details.getError())) {
+            if (status.equals(details.getFailed())) {
                 log.info("Remote procedure has encountered an error");
                 // todo throw exception in callable...
             }

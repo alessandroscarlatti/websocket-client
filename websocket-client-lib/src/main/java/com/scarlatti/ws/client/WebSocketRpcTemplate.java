@@ -1,5 +1,7 @@
 package com.scarlatti.ws.client;
 
+import com.scarlatti.ws.client.factory.WsRpcFactory;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 

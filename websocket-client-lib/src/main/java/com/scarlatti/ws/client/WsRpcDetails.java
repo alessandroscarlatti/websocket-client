@@ -36,8 +36,6 @@ public interface WsRpcDetails {
      */
     String getKill();
 
-    String getLog();  // todo is this really used?
-
     /**
      * @return status indicating remote procedure is executing.
      */
@@ -51,7 +49,7 @@ public interface WsRpcDetails {
     /**
      * @return status indicating remote procedure has encountered an error.
      */
-    String getError();
+    String getFailed();
 
     /**
      * @return status indicating remote procedure has been successfully killed.

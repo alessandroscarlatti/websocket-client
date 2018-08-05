@@ -1,6 +1,12 @@
-package com.scarlatti.ws.client;
+package com.scarlatti.ws.client.factory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.scarlatti.ws.client.WsRpcDetails;
+import com.scarlatti.ws.client.WsRpcSessionHandler;
+import com.scarlatti.ws.client.WsRpcSyncManager;
+import com.scarlatti.ws.client.WsRpcSyncManagerCountDownImpl;
+import com.scarlatti.ws.client.converter.WsRpcJacksonMessageConverter;
+import com.scarlatti.ws.client.converter.WsRpcMessageConverter;
 import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -22,31 +28,50 @@ import java.util.concurrent.Executors;
  */
 public class WsRpcFactory implements Closeable {
 
-    private ObjectMapper objectMapper = new ObjectMapper();
     private List<ExecutorService> executorServices = new ArrayList<>();
     private List<WsRpcSyncManager> syncManagers = new ArrayList<>();
+    private WsRpcMessageFactory messageFactory = messageFactory();
+    private WsRpcMessageConverter messageConverter = messageConverter();
+    private WsRpcDetails details;
 
-    protected WsRpcSessionHandler getSessionHandler(WsRpcDetails details) {
-        ExecutorService service = getExecutorService();
-        executorServices.add(service);
-        WsRpcSyncManager syncManager = syncManager();
-        syncManagers.add(syncManager);
-        return new WsRpcSessionHandler(details, objectMapper, service, syncManager);
+    public WsRpcFactory(WsRpcDetails details) {
+        this.details = details;
     }
 
-    protected WebSocketStompClient getWebSocketClient() {
+    public WsRpcSessionHandler getSessionHandler() {
+        ExecutorService executorService = getExecutorService();
+        executorServices.add(executorService);
+        WsRpcSyncManager syncManager = syncManager();
+        syncManagers.add(syncManager);
+        return new WsRpcSessionHandler(
+            details,
+            messageConverter,
+            messageFactory,
+            executorService,
+            syncManager);
+    }
+
+    public WebSocketStompClient getWebSocketClient() {
         WebSocketClient client = new StandardWebSocketClient();
         WebSocketStompClient stompClient = new WebSocketStompClient(client);
         stompClient.setMessageConverter(new StringMessageConverter());
         return stompClient;
     }
 
-    protected ExecutorService getExecutorService() {
+    public ExecutorService getExecutorService() {
         return Executors.newSingleThreadExecutor();
     }
 
-    protected WsRpcSyncManager syncManager() {
+    public WsRpcSyncManager syncManager() {
         return new WsRpcSyncManagerCountDownImpl();
+    }
+
+    public WsRpcMessageFactory messageFactory() {
+        return new DefaultWsRpcMessageFactory(details);
+    }
+
+    public WsRpcMessageConverter messageConverter() {
+        return new WsRpcJacksonMessageConverter(new ObjectMapper());
     }
 
     @Override

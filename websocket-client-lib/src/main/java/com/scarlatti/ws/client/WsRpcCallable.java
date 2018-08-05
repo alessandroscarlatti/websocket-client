@@ -1,5 +1,6 @@
 package com.scarlatti.ws.client;
 
+import com.scarlatti.ws.client.factory.WsRpcFactory;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.util.concurrent.*;
