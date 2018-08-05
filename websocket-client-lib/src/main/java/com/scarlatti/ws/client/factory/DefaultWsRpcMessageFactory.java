@@ -1,6 +1,6 @@
 package com.scarlatti.ws.client.factory;
 
-import com.scarlatti.ws.client.WsRpcDetails;
+import com.scarlatti.ws.client.model.WsRpcDetails;
 import com.scarlatti.ws.client.model.WsRpcControlMessage;
 
 /**

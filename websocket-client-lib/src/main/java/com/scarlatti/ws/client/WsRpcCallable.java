@@ -1,6 +1,7 @@
 package com.scarlatti.ws.client;
 
 import com.scarlatti.ws.client.factory.WsRpcFactory;
+import com.scarlatti.ws.client.model.WsRpcDetails;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.util.concurrent.*;
@@ -42,7 +43,7 @@ class WsRpcCallable implements Callable<byte[]> {
 
         // create the client and session handler
         client = factory.getWebSocketClient();
-        sessionHandler = factory.getSessionHandler(details);
+        sessionHandler = factory.getSessionHandler();
 
         // connect to the server
         client.connect(details.getAddress(), sessionHandler);

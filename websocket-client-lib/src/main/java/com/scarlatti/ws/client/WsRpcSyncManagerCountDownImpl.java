@@ -34,8 +34,9 @@ public class WsRpcSyncManagerCountDownImpl implements WsRpcSyncManager {
     @Override
     public void awaitReady(long timeout, TimeUnit timeUnit) {
         try {
-            // todo handle timeout
-            readyLatch.await(timeout, timeUnit);
+            if (!readyLatch.await(timeout, timeUnit)) {
+                throw new RuntimeException("Unable to initiate rpc.");
+            }
         } catch (InterruptedException e) {
             throw new RuntimeException("awaitReady interrupted", e);
         }

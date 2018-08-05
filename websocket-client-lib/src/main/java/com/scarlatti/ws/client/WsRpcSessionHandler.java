@@ -1,8 +1,9 @@
 package com.scarlatti.ws.client;
 
-import com.scarlatti.ws.client.converter.WsRpcJacksonMessageConverter;
 import com.scarlatti.ws.client.converter.WsRpcMessageConverter;
 import com.scarlatti.ws.client.factory.WsRpcMessageFactory;
+import com.scarlatti.ws.client.model.WsRpcControlMessage;
+import com.scarlatti.ws.client.model.WsRpcDetails;
 import com.scarlatti.ws.client.model.WsRpcStatusMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,9 @@ public class WsRpcSessionHandler implements StompSessionHandler {
      * This is an asynchronous operation.
      */
     void invoke() {
-        session.send(details.getControl(), messageFactory.invokeMessage());
+        WsRpcControlMessage message = messageFactory.invokeMessage();
+        String string = messageMapper.convertControlMessageToString(message);
+        session.send(details.getControl(), string);
     }
 
     /**
@@ -58,7 +61,9 @@ public class WsRpcSessionHandler implements StompSessionHandler {
      * This is an asynchronous operation.
      */
     void kill() {
-        session.send(details.getControl(), messageFactory.killMessage());
+        WsRpcControlMessage message = messageFactory.killMessage();
+        String string = messageMapper.convertControlMessageToString(message);
+        session.send(details.getControl(), string);
     }
 
     /**
@@ -71,8 +76,9 @@ public class WsRpcSessionHandler implements StompSessionHandler {
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         log.info("WsRpcSessionHandler.afterConnected() session = [{}], connectedHeaders = [{}]", session, connectedHeaders);
-        session.subscribe("/topic/status", this);
         this.session = session;
+        session.subscribe(details.getStatus(), this);
+        syncManager.notifyReady();
     }
 
     @Override
@@ -103,7 +109,7 @@ public class WsRpcSessionHandler implements StompSessionHandler {
         }
 
         try {
-            WsRpcStatusMessage msg = (WsRpcStatusMessage) messageMapper.convertFromString((String) payload);
+            WsRpcStatusMessage msg = (WsRpcStatusMessage) messageMapper.convertStatusMessageFromString((String) payload);
             String status = msg.getStatus();
 
             // the remote procedure is executing
@@ -129,7 +135,7 @@ public class WsRpcSessionHandler implements StompSessionHandler {
                 // todo throw exception in callable...
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error parsing rpc message " + payload);
+            throw new RuntimeException("Error parsing rpc message " + payload, e);
         }
     }
 

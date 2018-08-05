@@ -1,5 +1,7 @@
 package com.scarlatti.ws.client;
 
+import com.scarlatti.ws.client.model.WsRpcDetails;
+
 import java.util.concurrent.*;
 
 /**

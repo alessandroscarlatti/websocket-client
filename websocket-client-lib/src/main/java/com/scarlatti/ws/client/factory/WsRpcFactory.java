@@ -1,7 +1,7 @@
 package com.scarlatti.ws.client.factory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.scarlatti.ws.client.WsRpcDetails;
+import com.scarlatti.ws.client.model.WsRpcDetails;
 import com.scarlatti.ws.client.WsRpcSessionHandler;
 import com.scarlatti.ws.client.WsRpcSyncManager;
 import com.scarlatti.ws.client.WsRpcSyncManagerCountDownImpl;
@@ -30,12 +30,14 @@ public class WsRpcFactory implements Closeable {
 
     private List<ExecutorService> executorServices = new ArrayList<>();
     private List<WsRpcSyncManager> syncManagers = new ArrayList<>();
-    private WsRpcMessageFactory messageFactory = messageFactory();
-    private WsRpcMessageConverter messageConverter = messageConverter();
+    private WsRpcMessageFactory messageFactory;
+    private WsRpcMessageConverter messageConverter;
     private WsRpcDetails details;
 
     public WsRpcFactory(WsRpcDetails details) {
         this.details = details;
+        messageFactory = messageFactory();
+        messageConverter = messageConverter();
     }
 
     public WsRpcSessionHandler getSessionHandler() {

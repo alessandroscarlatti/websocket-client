@@ -12,10 +12,9 @@ buildscript {
 
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
+apply plugin: 'maven-publish'
 
-group = 'com.scarlatti.ws.client'
+group = 'com.scarlatti'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
@@ -24,12 +23,24 @@ repositories {
 }
 
 dependencies {
-	compile('org.springframework:spring-websocket')
-	compile('org.springframework:spring-messaging')
+	compile('org.springframework:spring-websocket:4.3.9.RELEASE')
+	compile('org.springframework:spring-messaging:4.3.9.RELEASE')
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.5'
 	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 	testCompile('org.codehaus.groovy:groovy')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile group: 'org.spockframework', name: 'spock-core', version: '1.1-groovy-2.4'
 	testCompile group: 'org.spockframework', name: 'spock-spring', version: '1.1-groovy-2.4'
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			groupId = group
+			artifactId = project.name
+			version = version
+
+			from components.java
+		}
+	}
 }

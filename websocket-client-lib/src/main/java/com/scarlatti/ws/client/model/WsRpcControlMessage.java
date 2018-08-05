@@ -10,6 +10,9 @@ package com.scarlatti.ws.client.model;
 public class WsRpcControlMessage {
     private String control;
 
+    public WsRpcControlMessage() {
+    }
+
     public WsRpcControlMessage(String command) {
         this.control = command;
     }

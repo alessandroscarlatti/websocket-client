@@ -1,4 +1,4 @@
-package com.scarlatti.ws.client;
+package com.scarlatti.ws.client.model;
 
 import java.util.function.Consumer;
 

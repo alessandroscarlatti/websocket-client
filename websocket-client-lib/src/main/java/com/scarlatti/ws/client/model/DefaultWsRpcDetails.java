@@ -1,7 +1,5 @@
 package com.scarlatti.ws.client.model;
 
-import com.scarlatti.ws.client.WsRpcDetails;
-
 import java.util.function.Consumer;
 
 /**

@@ -1,9 +1,13 @@
 package com.scarlatti.ws.client;
 
+import com.scarlatti.ws.client.model.WsRpcDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -16,9 +20,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/api")
 public class AppController {
 
-    @GetMapping("/send")
-    public ResponseEntity<String> send() {
+    private WsRpcDetails details;
+
+    public AppController(WsRpcDetails details) {
+        this.details = details;
+    }
+
+    @GetMapping("/invoke")
+    public ResponseEntity<String> send() throws Exception {
+
+        WebSocketRpcTemplate rpcTemplate = new WebSocketRpcTemplate(details);
+
+        rpcTemplate.invoke();
 
         return ResponseEntity.ok("sent.");
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(500).body(e.getMessage());
     }
 }

@@ -8,6 +8,8 @@ package com.scarlatti.ws.client.converter;
  * Sunday, 8/5/2018
  */
 public interface WsRpcMessageConverter {
-    Object convertFromString(String message);
-    Object convertToString(Object payload);
+    Object convertControlMessageFromString(String message);
+    String convertControlMessageToString(Object payload);
+    Object convertStatusMessageFromString(String message);
+    String convertStatusMessageToString(Object payload);
 }

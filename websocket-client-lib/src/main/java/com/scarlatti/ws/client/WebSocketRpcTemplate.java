@@ -1,9 +1,12 @@
 package com.scarlatti.ws.client;
 
 import com.scarlatti.ws.client.factory.WsRpcFactory;
+import com.scarlatti.ws.client.model.DefaultWsRpcDetails;
+import com.scarlatti.ws.client.model.WsRpcDetails;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.concurrent.*;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -11,30 +14,56 @@ import java.util.concurrent.Future;
  * __/ __ |/ / -_|_-<(_-</ _ `/ _ \/ _  / __/ _ \  _\ \/ __/ _ `/ __/ / _ `/ __/ __/ /
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Saturday, 8/4/2018
- *
+ * <p>
  * Template for performing RPC with a websocket message broker.
- *
+ * <p>
  * User can invoke remote procedure.
  * User can listen for live messages.
  * User can listen for error.
  * User can listen for success.
- *
+ * <p>
  * Invocation should be wrapped in a {@link java.util.concurrent.Future }
  */
-public class WebSocketRpcTemplate {
+public class WebSocketRpcTemplate implements Closeable {
 
     private WsRpcFactory factory;
     private WsRpcDetails details;
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    // todo provide default factory and default details.
+    public WebSocketRpcTemplate() {
+        details = new DefaultWsRpcDetails();
+        factory = new WsRpcFactory(details);
+    }
+
+    public WebSocketRpcTemplate(WsRpcDetails details) {
+        this.details = details;
+        factory = new WsRpcFactory(details);
+    }
 
     public WebSocketRpcTemplate(WsRpcFactory factory, WsRpcDetails details) {
         this.factory = factory;
         this.details = details;
     }
 
-    public <V> Future<V> invokeRpc() {
-        Callable<V> callable = new WsRpcCallable<V>(factory, details);
-        return new WsRpcFutureTask<>(callable);
+    public void invoke() throws InterruptedException, ExecutionException {
+        WsRpcCallable callable = new WsRpcCallable(factory, details);
+        FutureTask<byte[]> rpc = new WsRpcFutureTask(callable, details);
+        executorService.execute(rpc);
+        rpc.get();
+    }
+
+    public String invokeForString() throws InterruptedException, ExecutionException {
+        return new String(invokeForBytes());
+    }
+
+    public byte[] invokeForBytes() throws InterruptedException, ExecutionException {
+        WsRpcCallable callable = new WsRpcCallable(factory, details);
+        Future<byte[]> rpc = new WsRpcFutureTask(callable, details);
+        return rpc.get();
+    }
+
+    @Override
+    public void close() throws IOException {
+        executorService.shutdown();
     }
 }
