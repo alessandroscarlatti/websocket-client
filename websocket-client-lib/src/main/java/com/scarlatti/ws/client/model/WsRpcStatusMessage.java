@@ -7,11 +7,11 @@ package com.scarlatti.ws.client.model;
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Saturday, 8/4/2018
  */
-public class WsRpcMessage {
+public class WsRpcStatusMessage {
     private String status;
     private byte[] contentBytes;
 
-    public WsRpcMessage(String status, byte[] messageBytes) {
+    public WsRpcStatusMessage(String status, byte[] messageBytes) {
         this.status = status;
         this.contentBytes = messageBytes;
     }

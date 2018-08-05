@@ -36,7 +36,7 @@ class WsRpcCallable implements Callable<byte[]> {
      * @throws Exception if the rpc fails for any reason.
      */
     @Override
-    public byte[] call() throws Exception {
+    public byte[] call() throws TimeoutException, Exception {
         validateInvocation();
 
         // create the client and session handler
@@ -55,6 +55,7 @@ class WsRpcCallable implements Callable<byte[]> {
         return sessionHandler.getResult();
     }
 
+    // todo force caller to handle timeout exception?
     public void kill() {
         sessionHandler.kill();
         sessionHandler.getSyncManager().awaitKilled(details.getKillTimeoutMs(), TimeUnit.MILLISECONDS);

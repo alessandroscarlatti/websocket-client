@@ -1,7 +1,7 @@
 package com.scarlatti.ws.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.scarlatti.ws.client.model.WsRpcMessage;
+import com.scarlatti.ws.client.model.WsRpcStatusMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -97,7 +97,7 @@ public class WsRpcSessionHandler implements StompSessionHandler {
         }
 
         try {
-            WsRpcMessage msg = objectMapper.readValue((String) payload, WsRpcMessage.class);
+            WsRpcStatusMessage msg = objectMapper.readValue((String) payload, WsRpcStatusMessage.class);
             String status = msg.getStatus();
 
             // the remote procedure is executing

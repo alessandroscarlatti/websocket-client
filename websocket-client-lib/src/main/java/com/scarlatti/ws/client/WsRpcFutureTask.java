@@ -9,14 +9,24 @@ import java.util.concurrent.*;
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Saturday, 8/4/2018
  */
-public class WsRpcFutureTask<V> extends FutureTask<V> {
-    public WsRpcFutureTask(Callable<V> callable) {
+public class WsRpcFutureTask extends FutureTask<byte[]> {
+
+    private WsRpcCallable callable;
+    private WsRpcDetails details;
+
+    public WsRpcFutureTask(WsRpcCallable callable, WsRpcDetails details) {
         super(callable);
+
+        this.callable = callable;
+        this.details = details;
     }
 
-    // initiate the websocket invocation
     @Override
-    public V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        return super.get(timeout, unit);
+    public boolean cancel(boolean mayInterruptIfRunning) {
+
+        // first try to cancel the remote procedure
+        callable.kill();
+
+        return super.cancel(mayInterruptIfRunning);
     }
 }

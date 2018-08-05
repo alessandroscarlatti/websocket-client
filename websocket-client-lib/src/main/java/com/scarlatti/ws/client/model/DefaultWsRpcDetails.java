@@ -17,8 +17,7 @@ import java.util.function.Consumer;
 public class DefaultWsRpcDetails implements WsRpcDetails {
     // todo configure defaults
     private String address;
-    private String wsConnectPath;
-    private String command;
+    private String control;
     private String status;
     private String invoke;
     private String kill;
@@ -27,13 +26,23 @@ public class DefaultWsRpcDetails implements WsRpcDetails {
     private String complete;
     private String error;
     private String killed;
-    private String invokeMessage;
-    private String killMessage;
     private long invokeTimeoutMs;
     private long procTimeoutMs;
     private long killTimeoutMs;
 
     private Consumer<String> logger = noOpLogger();
+
+    public static final String WS_CONNECT_PATH = "/connect";
+    public static final String CONTROL = "/control"; // todo figure out what this actually is
+    public static final String INVOKE = "/invoke";
+    public static final String KILL = "/kill";
+    public static final String RUNNING = "RUNNING";
+    public static final String COMPLETE = "COMPLETE";
+    public static final String KILL_MESSAGE = "KILL";
+    public static final String KILLED = "KILLED";
+//    public static final String INVOKE_=
+
+
 
     private static Consumer<String> noOpLogger() {
         return (s) -> {};
@@ -49,21 +58,12 @@ public class DefaultWsRpcDetails implements WsRpcDetails {
     }
 
     @Override
-    public String getWsConnectPath() {
-        return wsConnectPath;
+    public String getControl() {
+        return control;
     }
 
-    public void setWsConnectPath(String wsConnectPath) {
-        this.wsConnectPath = wsConnectPath;
-    }
-
-    @Override
-    public String getCommand() {
-        return command;
-    }
-
-    public void setCommand(String command) {
-        this.command = command;
+    public void setControl(String control) {
+        this.control = control;
     }
 
     @Override
@@ -127,24 +127,6 @@ public class DefaultWsRpcDetails implements WsRpcDetails {
 
     public void setKilled(String killed) {
         this.killed = killed;
-    }
-
-    @Override
-    public String getInvokeMessage() {
-        return invokeMessage;
-    }
-
-    public void setInvokeMessage(String invokeMessage) {
-        this.invokeMessage = invokeMessage;
-    }
-
-    @Override
-    public String getKillMessage() {
-        return killMessage;
-    }
-
-    public void setKillMessage(String killMessage) {
-        this.killMessage = killMessage;
     }
 
     @Override

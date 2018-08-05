@@ -11,21 +11,70 @@ import java.util.function.Consumer;
  */
 public interface WsRpcDetails {
 
+    /**
+     * @return address to connect to.  For example, wss://localhost:8081/app
+     */
     String getAddress();
-    String getWsConnectPath();
-    String getCommand();
+
+    /**
+     * @return the destination for control messages.
+     */
+    String getControl();
+
+    /**
+     * @return the destination for status messages.
+     */
     String getStatus();
+
+    /**
+     * @return command name for invoking remote procedure.
+     */
     String getInvoke();
+
+    /**
+     * @return command name for killing remote procedure.
+     */
     String getKill();
-    String getLog();
+
+    String getLog();  // todo is this really used?
+
+    /**
+     * @return status indicating remote procedure is executing.
+     */
     String getRunning();
+
+    /**
+     * @return status indicating remote procedure is complete.
+     */
     String getComplete();
+
+    /**
+     * @return status indicating remote procedure has encountered an error.
+     */
     String getError();
-    String getKilled();
-    String getInvokeMessage();
-    String getKillMessage();
+
+    /**
+     * @return status indicating remote procedure has been successfully killed.
+     */
+    String getKilled();  // todo do we need this?
+
+    /**
+     * @return how long to wait for remote procedure to initiate.
+     */
     long getInvokeTimeoutMs();
+
+    /**
+     * @return maximum time to allow remote procedure to execute.
+     */
     long getProcTimeoutMs();
+
+    /**
+     * @return maximum time to allow remote server to attempt to kill remote procedure.
+     */
     long getKillTimeoutMs();
+
+    /**
+     * @return what to do with lines logged by remote procedure.
+     */
     Consumer<String> getLogger();
 }
