@@ -1,0 +1,49 @@
+buildscript {
+	ext {
+		springBootVersion = '2.0.2.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.scarlatti.ws.client'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-websocket')
+    compile project(":websocket-client-lib")
+//	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.5'
+//	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.9.5'
+	compile('org.codehaus.groovy:groovy')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile group: 'org.spockframework', name: 'spock-core', version: '1.1-groovy-2.4'
+	testCompile group: 'org.spockframework', name: 'spock-spring', version: '1.1-groovy-2.4'
+}
+
+sourceSets {
+	systemTest {
+		groovy.srcDirs "src/systemTest"
+		compileClasspath += sourceSets.test.runtimeClasspath
+		runtimeClasspath += sourceSets.test.runtimeClasspath
+	}
+}
+
+task systemTest(type: Test, group: 'verification') {
+	testClassesDirs = sourceSets.systemTest.output.classesDirs
+	classpath += sourceSets.systemTest.runtimeClasspath
+}
