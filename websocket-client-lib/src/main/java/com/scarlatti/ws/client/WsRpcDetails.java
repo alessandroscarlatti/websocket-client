@@ -24,5 +24,8 @@ public interface WsRpcDetails {
     String getKilled();
     String getInvokeMessage();
     String getKillMessage();
+    long getInvokeTimeoutMs();
+    long getProcTimeoutMs();
+    long getKillTimeoutMs();
     Consumer<String> getLogger();
 }

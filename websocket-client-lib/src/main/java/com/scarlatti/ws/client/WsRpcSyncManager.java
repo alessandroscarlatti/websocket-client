@@ -1,6 +1,7 @@
 package com.scarlatti.ws.client;
 
 import java.io.Closeable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -13,4 +14,9 @@ public interface WsRpcSyncManager extends Closeable {
 
     void notifyReady();
     void notifyKilled();
+    void notifyComplete();
+
+    void awaitReady(long timeout, TimeUnit timeUnit);
+    void awaitKilled(long timeout, TimeUnit timeUnit);
+    void awaitComplete(long timeout, TimeUnit timeUnit);
 }

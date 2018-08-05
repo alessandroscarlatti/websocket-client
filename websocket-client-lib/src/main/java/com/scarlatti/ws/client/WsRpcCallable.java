@@ -18,7 +18,7 @@ import java.util.concurrent.*;
  * It will assume the user will assume error when the future throws
  * an {@link ExecutionException}
  */
-class WsRpcCallable<V> implements Callable<V> {
+class WsRpcCallable implements Callable<byte[]> {
 
     private WebSocketStompClient client;
     private WsRpcSessionHandler sessionHandler;
@@ -32,34 +32,32 @@ class WsRpcCallable<V> implements Callable<V> {
     }
 
     /**
-     * @return the return value from the RPC, if any.
+     * @return the return value from the RPC, as a byte array, or null if no return value.
      * @throws Exception if the rpc fails for any reason.
      */
     @Override
-    public V call() throws Exception {
+    public byte[] call() throws Exception {
         validateInvocation();
 
         // create the client and session handler
         client = factory.getWebSocketClient();
         sessionHandler = factory.getSessionHandler(details);
 
-        // start the waiting thread...
-
-        // connect to the server and invoke the remote procedure
+        // connect to the server
         client.connect(details.getAddress(), sessionHandler);
 
-        // wait for connection...countdown latch
+        // invoke the remote procedure
+        sessionHandler.getSyncManager().awaitReady(details.getInvokeTimeoutMs(), TimeUnit.MILLISECONDS);
         sessionHandler.invoke();
 
-        // todo wait for the session handler to signal error or finished, or we reach our timeout limit...
-
-        return null;
+        // wait for completion
+        sessionHandler.getSyncManager().awaitComplete(details.getProcTimeoutMs(), TimeUnit.MILLISECONDS);
+        return sessionHandler.getResult();
     }
 
     public void kill() {
-        // todo wait for kill to complete...
-        // start countdown latch
         sessionHandler.kill();
+        sessionHandler.getSyncManager().awaitKilled(details.getKillTimeoutMs(), TimeUnit.MILLISECONDS);
     }
 
     private void validateInvocation() {

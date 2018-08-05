@@ -2,6 +2,7 @@ package com.scarlatti.ws.client;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * ______    __                         __           ____             __     __  __  _
@@ -12,6 +13,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public class WsRpcSyncManagerCountDownImpl implements WsRpcSyncManager {
     private CountDownLatch readyLatch = new CountDownLatch(1);
+    private CountDownLatch completeLatch = new CountDownLatch(1);
     private CountDownLatch killedLatch = new CountDownLatch(1);
 
     @Override
@@ -22,6 +24,39 @@ public class WsRpcSyncManagerCountDownImpl implements WsRpcSyncManager {
     @Override
     public void notifyKilled() {
         killedLatch.countDown();
+    }
+
+    @Override
+    public void notifyComplete() {
+        completeLatch.countDown();
+    }
+
+    @Override
+    public void awaitReady(long timeout, TimeUnit timeUnit) {
+        try {
+            // todo handle timeout
+            readyLatch.await(timeout, timeUnit);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("awaitReady interrupted", e);
+        }
+    }
+
+    @Override
+    public void awaitKilled(long timeout, TimeUnit timeUnit) {
+        try {
+            killedLatch.await(timeout, timeUnit);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("awaitReady interrupted", e);
+        }
+    }
+
+    @Override
+    public void awaitComplete(long timeout, TimeUnit timeUnit) {
+        try {
+            completeLatch.await(timeout, timeUnit);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("awaitReady interrupted", e);
+        }
     }
 
     @Override

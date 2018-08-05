@@ -1,4 +1,6 @@
-package com.scarlatti.ws.client;
+package com.scarlatti.ws.client.model;
+
+import com.scarlatti.ws.client.WsRpcDetails;
 
 import java.util.function.Consumer;
 
@@ -27,6 +29,9 @@ public class DefaultWsRpcDetails implements WsRpcDetails {
     private String killed;
     private String invokeMessage;
     private String killMessage;
+    private long invokeTimeoutMs;
+    private long procTimeoutMs;
+    private long killTimeoutMs;
 
     private Consumer<String> logger = noOpLogger();
 
@@ -158,5 +163,32 @@ public class DefaultWsRpcDetails implements WsRpcDetails {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public long getKillTimeoutMs() {
+        return killTimeoutMs;
+    }
+
+    public void setKillTimeoutMs(long killTimeoutMs) {
+        this.killTimeoutMs = killTimeoutMs;
+    }
+
+    @Override
+    public long getProcTimeoutMs() {
+        return procTimeoutMs;
+    }
+
+    public void setProcTimeoutMs(long procTimeoutMs) {
+        this.procTimeoutMs = procTimeoutMs;
+    }
+
+    @Override
+    public long getInvokeTimeoutMs() {
+        return invokeTimeoutMs;
+    }
+
+    public void setInvokeTimeoutMs(long invokeTimeoutMs) {
+        this.invokeTimeoutMs = invokeTimeoutMs;
     }
 }

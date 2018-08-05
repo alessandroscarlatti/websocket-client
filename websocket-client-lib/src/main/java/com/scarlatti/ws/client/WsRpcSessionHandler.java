@@ -28,6 +28,7 @@ public class WsRpcSessionHandler implements StompSessionHandler {
     private ObjectMapper objectMapper;
     private ExecutorService executor;
     private WsRpcSyncManager syncManager;
+    private byte[] result;
 
     public WsRpcSessionHandler(WsRpcDetails details, ObjectMapper objectMapper, ExecutorService executor, WsRpcSyncManager syncManager) {
         this.details = details;
@@ -52,6 +53,13 @@ public class WsRpcSessionHandler implements StompSessionHandler {
     void kill() {
         // todo send kill message
         session.send(details.getKill(), details.getKillMessage());
+    }
+
+    /**
+     * @return the return value, if any, of the remote procedure.
+     */
+    public byte[] getResult() {
+        return result;
     }
 
     @Override
@@ -102,20 +110,24 @@ public class WsRpcSessionHandler implements StompSessionHandler {
             // the remote procedure has aborted execution
             if (status.equals(details.getKilled())) {
                 log.info("Remote procedure has been killed.");
-                // todo callable should ???
+                syncManager.notifyKilled();
             }
 
             if (status.equals(details.getComplete())) {
                 log.info("Remote procedure has completed.");
-                // todo return value...
+                syncManager.notifyComplete();
             }
 
             if (status.equals(details.getError())) {
                 log.info("Remote procedure has encountered an error");
-                // todo throw exception
+                // todo throw exception in callable...
             }
         } catch (Exception e) {
             throw new RuntimeException("Error parsing rpc message " + payload);
         }
+    }
+
+    public WsRpcSyncManager getSyncManager() {
+        return syncManager;
     }
 }
