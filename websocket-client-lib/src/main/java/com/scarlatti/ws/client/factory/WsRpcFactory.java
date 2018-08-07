@@ -39,15 +39,14 @@ public class WsRpcFactory implements Closeable {
         messageConverter = messageConverter();
     }
 
-    public StompSessionHandler getSessionHandler() {
+    public StompSessionHandler getSessionHandler(WsRpcInvocationDetails invocationDetails) {
         ExecutorService executorService = getExecutorService();
         executorServices.add(executorService);
         RpcSyncManager syncManager = syncManager();
         syncManagers.add(syncManager);
-        return new RpcSessionHandler(
+        return new RpcWsSessionHandler(
             details,
-            messageConverter,
-            messageFactory,
+            invocationDetails,
             executorService,
             syncManager);
     }

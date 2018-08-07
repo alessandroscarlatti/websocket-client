@@ -23,7 +23,7 @@ import java.util.concurrent.*;
 class WsRpcCallable implements Callable<byte[]> {
 
     private WebSocketStompClient client;
-    private RpcSessionHandler sessionHandler;
+    private RpcWsSessionHandler sessionHandler;
     private WsRpcDetails details;
     private boolean invoked;
     private WsRpcFactory factory;
@@ -45,7 +45,7 @@ class WsRpcCallable implements Callable<byte[]> {
 
         // create the client and session handler
         client = factory.getWebSocketClient();
-        sessionHandler = (RpcSessionHandler) factory.getSessionHandler();
+        sessionHandler = (RpcWsSessionHandler) factory.getSessionHandler(invocationDetails);
 
         // connect to the server
         client.connect(details.getAddress(), sessionHandler);

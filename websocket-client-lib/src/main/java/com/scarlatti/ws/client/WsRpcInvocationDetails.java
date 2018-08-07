@@ -8,14 +8,12 @@ package com.scarlatti.ws.client;
  * Monday, 8/6/2018
  */
 public class WsRpcInvocationDetails {
+    private String connectionPath;
     private String invocationPath;
     private Object[] params;
 
-    public WsRpcInvocationDetails(String invocationPath) {
-        this.invocationPath = invocationPath;
-    }
-
-    public WsRpcInvocationDetails(String invocationPath, Object[] params) {
+    public WsRpcInvocationDetails(String connectionPath, String invocationPath, Object[] params) {
+        this.connectionPath = connectionPath;
         this.invocationPath = invocationPath;
         this.params = params;
     }

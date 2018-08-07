@@ -1,8 +1,6 @@
 package com.scarlatti.ws.client;
 
-import com.scarlatti.ws.client.model.WsRpcDetails;
-
-import java.util.concurrent.*;
+import java.util.concurrent.FutureTask;
 
 /**
  * ______    __                         __           ____             __     __  __  _

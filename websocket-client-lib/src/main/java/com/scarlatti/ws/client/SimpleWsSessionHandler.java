@@ -19,10 +19,12 @@ public class SimpleWsSessionHandler extends StompSessionHandlerAdapter {
     private static final Logger log = LoggerFactory.getLogger(SimpleWsSessionHandler.class);
 
     private StompSession session;
+    private StompHeaders defaultHeaders;
 
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         this.session = session;
+//        defaultHeaders = connectedHeaders;
     }
 
     @Override
@@ -60,5 +62,9 @@ public class SimpleWsSessionHandler extends StompSessionHandlerAdapter {
     protected void disconnect() {
         if (session.isConnected())
             session.disconnect();
+    }
+
+    protected StompHeaders getDefaultHeaders() {
+        return defaultHeaders;
     }
 }

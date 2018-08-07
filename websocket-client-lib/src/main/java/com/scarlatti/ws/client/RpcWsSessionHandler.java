@@ -1,8 +1,5 @@
 package com.scarlatti.ws.client;
 
-import com.scarlatti.ws.client.converter.WsRpcMessageConverter;
-import com.scarlatti.ws.client.factory.WsRpcMessageFactory;
-import com.scarlatti.ws.client.model.WsRpcControlMessage;
 import com.scarlatti.ws.client.model.WsRpcDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,30 +15,23 @@ import java.util.concurrent.ExecutorService;
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Monday, 8/6/2018
  */
-public class RpcSessionHandler extends SimpleWsSessionHandler {
+public class RpcWsSessionHandler extends SimpleWsSessionHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(RpcSessionHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(RpcWsSessionHandler.class);
 
     private WsRpcDetails details;
-    private WsRpcMessageConverter messageMapper;
+    private WsRpcInvocationDetails invocationDetails;
     private ExecutorService executor;
     private RpcSyncManager syncManager;
-    private WsRpcMessageFactory messageFactory;
     private byte[] result;
 
-    public RpcSessionHandler(WsRpcDetails details,
-                             WsRpcMessageConverter messageMapper,
-                             WsRpcMessageFactory messageFactory,
-                             ExecutorService executor,
-                             RpcSyncManager syncManager) {
+    public RpcWsSessionHandler(WsRpcDetails details,
+                               WsRpcInvocationDetails invocationDetails,
+                               ExecutorService executor,
+                               RpcSyncManager syncManager) {
         this.details = details;
-        this.messageMapper = messageMapper;
+        this.invocationDetails = invocationDetails;
         this.executor = executor;
-        this.syncManager = syncManager;
-        this.messageFactory = messageFactory;
-    }
-
-    public RpcSessionHandler(RpcSyncManager syncManager) {
         this.syncManager = syncManager;
     }
 
@@ -50,9 +40,10 @@ public class RpcSessionHandler extends SimpleWsSessionHandler {
      * This is an asynchronous operation.
      */
     public void invoke() {
-        WsRpcControlMessage message = messageFactory.invokeMessage();
-        String string = messageMapper.convertControlMessageToString(message);
-        send(details.getControl(), string);
+        StompHeaders headers = new StompHeaders();
+        headers.add(details.getCommandHeader(), details.getInvoke());
+        headers.setDestination(invocationDetails.getInvocationPath());
+        send(headers, details.getInvoke());
     }
 
     /**
@@ -60,9 +51,10 @@ public class RpcSessionHandler extends SimpleWsSessionHandler {
      * This is an asynchronous operation.
      */
     public void kill() {
-        WsRpcControlMessage message = messageFactory.killMessage();
-        String string = messageMapper.convertControlMessageToString(message);
-        send(details.getControl(), string);
+        StompHeaders headers = new StompHeaders();
+        headers.add(details.getCommandHeader(), details.getKill());
+        headers.setDestination(invocationDetails.getInvocationPath());
+        send(headers, details.getKill());
     }
 
     @Override
@@ -89,7 +81,11 @@ public class RpcSessionHandler extends SimpleWsSessionHandler {
     }
 
     protected void handleFilteredFrame(StompHeaders headers, Object payload) {
-        String status = headers.get(details.getStatusHeader()).get(0);  // todo configure this hardcoded value
+        String status = "";
+        if (headers.containsKey(details.getStatusHeader())){
+            status = headers.get(details.getStatusHeader()).get(0);
+        }
+
         String msg = (String) payload;
 
         // the remote procedure is executing

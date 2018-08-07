@@ -37,6 +37,11 @@ public interface WsRpcDetails {
     String getInvoke();
 
     /**
+     * @return header name for the remote procedure control
+     */
+    String getCommandHeader();
+
+    /**
      * @return command name for killing remote procedure.
      */
     String getKill();

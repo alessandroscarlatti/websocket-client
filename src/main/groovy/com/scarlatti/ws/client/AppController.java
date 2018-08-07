@@ -29,9 +29,9 @@ public class AppController {
     @GetMapping("/invoke")
     public ResponseEntity<String> invoke() throws Exception {
 
-        WsRpcLoggingProcTemplate rpcTemplate = new WsRpcLoggingProcTemplate(details);
+        WebSocketRpcTemplate rpcTemplate = new WebSocketRpcTemplate("ws://localhost:8080/rpc/connect", details);
 
-        rpcTemplate.invoke();
+        rpcTemplate.invoke("/rpc/time");
 
         return ResponseEntity.ok("sent.");
     }
@@ -39,9 +39,9 @@ public class AppController {
     @GetMapping("/invokeForString")
     public ResponseEntity<String> invokeForString() throws Exception {
 
-        WsRpcLoggingProcTemplate rpcTemplate = new WsRpcLoggingProcTemplate(details);
+        WebSocketRpcTemplate rpcTemplate = new WebSocketRpcTemplate("ws://localhost:8080/rpc/connect", details);
 
-        String string = rpcTemplate.invokeForString();
+        String string = rpcTemplate.invokeForString("/rpc/time");
 
         return ResponseEntity.ok(string);
     }
@@ -49,9 +49,9 @@ public class AppController {
     @GetMapping("/invokeForBytes")
     public ResponseEntity<String> invokeForBytes() throws Exception {
 
-        WsRpcLoggingProcTemplate rpcTemplate = new WsRpcLoggingProcTemplate(details);
+        WebSocketRpcTemplate rpcTemplate = new WebSocketRpcTemplate("ws://localhost:8080/rpc/connect", details);
 
-        byte[] bytes = rpcTemplate.invokeForBytes();
+        byte[] bytes = rpcTemplate.invokeForBytes("/rpc/time");
 
         return ResponseEntity.ok(new String(bytes));
     }

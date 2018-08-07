@@ -18,6 +18,7 @@ public class DefaultWsRpcDetails implements WsRpcDetails {
     private String status = STATUS;
     private String statusHeader = STATUS_HEADER;
     private String invoke = INVOKE;
+    private String commandHeader = COMMAND_HEADER;
     private String kill = KILL;
     private String running = RUNNING;
     private String complete = COMPLETE;
@@ -32,6 +33,7 @@ public class DefaultWsRpcDetails implements WsRpcDetails {
     public static final String STATUS = "/status";
     public static final String STATUS_HEADER = "Status";
     public static final String INVOKE = "INVOKE";
+    public static final String COMMAND_HEADER = "Command";
     public static final String KILL = "KILL";
     public static final String RUNNING = "RUNNING";
     public static final String COMPLETE = "COMPLETE";
@@ -143,6 +145,15 @@ public class DefaultWsRpcDetails implements WsRpcDetails {
 
     public void setStatusHeader(String statusHeader) {
         this.statusHeader = statusHeader;
+    }
+
+    @Override
+    public String getCommandHeader() {
+        return commandHeader;
+    }
+
+    public void setCommandHeader(String commandHeader) {
+        this.commandHeader = commandHeader;
     }
 
     @Override
