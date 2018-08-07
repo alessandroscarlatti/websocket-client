@@ -14,13 +14,11 @@ import java.util.concurrent.*;
 public class WsRpcFutureTask extends FutureTask<byte[]> {
 
     private WsRpcCallable callable;
-    private WsRpcDetails details;
 
-    public WsRpcFutureTask(WsRpcCallable callable, WsRpcDetails details) {
+    public WsRpcFutureTask(WsRpcCallable callable) {
         super(callable);
 
         this.callable = callable;
-        this.details = details;
     }
 
     @Override

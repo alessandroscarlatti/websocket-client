@@ -1,13 +1,12 @@
 package com.scarlatti.ws.client.factory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.scarlatti.ws.client.*;
 import com.scarlatti.ws.client.model.WsRpcDetails;
-import com.scarlatti.ws.client.WsRpcSessionHandler;
-import com.scarlatti.ws.client.WsRpcSyncManager;
-import com.scarlatti.ws.client.WsRpcSyncManagerCountDownImpl;
 import com.scarlatti.ws.client.converter.WsRpcJacksonMessageConverter;
 import com.scarlatti.ws.client.converter.WsRpcMessageConverter;
 import org.springframework.messaging.converter.StringMessageConverter;
+import org.springframework.messaging.simp.stomp.StompSessionHandler;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
@@ -29,7 +28,7 @@ import java.util.concurrent.Executors;
 public class WsRpcFactory implements Closeable {
 
     private List<ExecutorService> executorServices = new ArrayList<>();
-    private List<WsRpcSyncManager> syncManagers = new ArrayList<>();
+    private List<RpcSyncManager> syncManagers = new ArrayList<>();
     private WsRpcMessageFactory messageFactory;
     private WsRpcMessageConverter messageConverter;
     private WsRpcDetails details;
@@ -40,12 +39,12 @@ public class WsRpcFactory implements Closeable {
         messageConverter = messageConverter();
     }
 
-    public WsRpcSessionHandler getSessionHandler() {
+    public StompSessionHandler getSessionHandler() {
         ExecutorService executorService = getExecutorService();
         executorServices.add(executorService);
-        WsRpcSyncManager syncManager = syncManager();
+        RpcSyncManager syncManager = syncManager();
         syncManagers.add(syncManager);
-        return new WsRpcSessionHandler(
+        return new RpcSessionHandler(
             details,
             messageConverter,
             messageFactory,
@@ -64,8 +63,8 @@ public class WsRpcFactory implements Closeable {
         return Executors.newSingleThreadExecutor();
     }
 
-    public WsRpcSyncManager syncManager() {
-        return new WsRpcSyncManagerCountDownImpl();
+    public RpcSyncManager syncManager() {
+        return new RpcSyncManagerCountDownImpl();
     }
 
     public WsRpcMessageFactory messageFactory() {
@@ -82,7 +81,7 @@ public class WsRpcFactory implements Closeable {
             service.shutdown();
         }
 
-        for (WsRpcSyncManager syncManager : syncManagers) {
+        for (RpcSyncManager syncManager : syncManagers) {
             syncManager.close();
         }
     }

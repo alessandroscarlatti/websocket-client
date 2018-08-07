@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
  * Saturday, 8/4/2018
  */
-public class WsRpcSyncManagerCountDownImpl implements WsRpcSyncManager {
+public class RpcSyncManagerCountDownImpl implements RpcSyncManager {
     private CountDownLatch readyLatch = new CountDownLatch(1);
     private CountDownLatch completeLatch = new CountDownLatch(1);
     private CountDownLatch killedLatch = new CountDownLatch(1);

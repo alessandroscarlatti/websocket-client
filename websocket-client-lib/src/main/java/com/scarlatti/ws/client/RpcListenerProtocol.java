@@ -1,22 +1,29 @@
 package com.scarlatti.ws.client;
 
-import java.io.Closeable;
-import java.util.concurrent.TimeUnit;
-
 /**
  * ______    __                         __           ____             __     __  __  _
  * ___/ _ | / /__ ___ ___ ___ ____  ___/ /______    / __/______ _____/ /__ _/ /_/ /_(_)
  * __/ __ |/ / -_|_-<(_-</ _ `/ _ \/ _  / __/ _ \  _\ \/ __/ _ `/ __/ / _ `/ __/ __/ /
  * /_/ |_/_/\__/___/___/\_,_/_//_/\_,_/_/  \___/ /___/\__/\_,_/_/ /_/\_,_/\__/\__/_/
- * Saturday, 8/4/2018
+ * Monday, 8/6/2018
  */
-public interface WsRpcSyncManager extends Closeable {
+public interface RpcListenerProtocol {
 
-    void notifyReady();
-    void notifyKilled();
-    void notifyComplete();
+    void onReceiveData(Object data);
 
-    void awaitReady(long timeout, TimeUnit timeUnit);
-    void awaitKilled(long timeout, TimeUnit timeUnit);
-    void awaitComplete(long timeout, TimeUnit timeUnit);
+    boolean isRunning();
+
+    boolean isFailed();
+
+    boolean isKilled();
+
+    boolean isComplete();
+
+    void running();
+
+    void failed();
+
+    void killed();
+
+    void complete();
 }

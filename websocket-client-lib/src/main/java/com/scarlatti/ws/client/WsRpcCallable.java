@@ -23,14 +23,16 @@ import java.util.concurrent.*;
 class WsRpcCallable implements Callable<byte[]> {
 
     private WebSocketStompClient client;
-    private WsRpcSessionHandler sessionHandler;
+    private RpcSessionHandler sessionHandler;
     private WsRpcDetails details;
     private boolean invoked;
     private WsRpcFactory factory;
+    private WsRpcInvocationDetails invocationDetails;
 
-    public WsRpcCallable(WsRpcFactory factory, WsRpcDetails details) {
+    public WsRpcCallable(WsRpcFactory factory, WsRpcDetails details, WsRpcInvocationDetails invocationDetails) {
         this.factory = factory;
         this.details = details;
+        this.invocationDetails = invocationDetails;
     }
 
     /**
@@ -43,12 +45,12 @@ class WsRpcCallable implements Callable<byte[]> {
 
         // create the client and session handler
         client = factory.getWebSocketClient();
-        sessionHandler = factory.getSessionHandler();
+        sessionHandler = (RpcSessionHandler) factory.getSessionHandler();
 
         // connect to the server
         client.connect(details.getAddress(), sessionHandler);
 
-        // invoke the remote procedure
+        // converse the remote procedure
         sessionHandler.getSyncManager().awaitReady(details.getInvokeTimeoutMs(), TimeUnit.MILLISECONDS);
         sessionHandler.invoke();
 
@@ -65,7 +67,7 @@ class WsRpcCallable implements Callable<byte[]> {
 
     private void validateInvocation() {
         if (invoked)
-            throw new IllegalStateException("May not invoke the websocket rpc implementation more than once.");
+            throw new IllegalStateException("May not converse the websocket rpc implementation more than once.");
 
         invoked = true;
     }

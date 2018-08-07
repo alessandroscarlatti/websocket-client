@@ -16,6 +16,7 @@ public class DefaultWsRpcDetails implements WsRpcDetails {
     private String address;
     private String control = CONTROL;
     private String status = STATUS;
+    private String statusHeader = STATUS_HEADER;
     private String invoke = INVOKE;
     private String kill = KILL;
     private String running = RUNNING;
@@ -27,8 +28,9 @@ public class DefaultWsRpcDetails implements WsRpcDetails {
     private long killTimeoutMs = KILL_TIMEOUT_MS;
     private Consumer<String> logger = noOpLogger();
 
-    public static final String CONTROL = "/control";
+    public static final String CONTROL = "/";
     public static final String STATUS = "/status";
+    public static final String STATUS_HEADER = "Status";
     public static final String INVOKE = "INVOKE";
     public static final String KILL = "KILL";
     public static final String RUNNING = "RUNNING";
@@ -132,6 +134,15 @@ public class DefaultWsRpcDetails implements WsRpcDetails {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String getStatusHeader() {
+        return statusHeader;
+    }
+
+    public void setStatusHeader(String statusHeader) {
+        this.statusHeader = statusHeader;
     }
 
     @Override

@@ -30,7 +30,7 @@ public class WsRpcSessionHandler implements StompSessionHandler {
     private WsRpcDetails details;
     private WsRpcMessageConverter messageMapper;
     private ExecutorService executor;
-    private WsRpcSyncManager syncManager;
+    private RpcSyncManager syncManager;
     private WsRpcMessageFactory messageFactory;
     private byte[] result;
 
@@ -38,7 +38,7 @@ public class WsRpcSessionHandler implements StompSessionHandler {
                                WsRpcMessageConverter messageConverter,
                                WsRpcMessageFactory messageFactory,
                                ExecutorService executor,
-                               WsRpcSyncManager syncManager) {
+                               RpcSyncManager syncManager) {
         this.details = details;
         this.messageMapper = messageConverter;
         this.executor = executor;
@@ -148,7 +148,7 @@ public class WsRpcSessionHandler implements StompSessionHandler {
         }
     }
 
-    public WsRpcSyncManager getSyncManager() {
+    public RpcSyncManager getSyncManager() {
         return syncManager;
     }
 }

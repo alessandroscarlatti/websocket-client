@@ -27,6 +27,11 @@ public interface WsRpcDetails {
     String getStatus();
 
     /**
+     * @return header name for the remote procedure status.
+     */
+    String getStatusHeader();
+
+    /**
      * @return command name for invoking remote procedure.
      */
     String getInvoke();
